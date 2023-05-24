@@ -1,0 +1,108 @@
+Spring ORM(Object-Relational Mapping)
+-------------------------------------
+Spring With ORM FrameWorks
+             ORM
+                -->Hibernate
+                -->Toplink
+                -->iBatis
+
+Advantage Of Using Spring ORM
+-----------------------------
+ Less Coding is Required
+ Easy to test
+ Better exception handling
+ Integreated Tranasaction Mangaement
+
+Traditional Approach
+------------------
+ Java prog ---------> JDBC ----------->DB
+           <---------      <-----------
+
+ORM Approach
+------------
+ 
+Java Prog         ORM          DB
+
+clas ABC
+{
+  String name; ---->Mapping---->DB
+  String college;
+}
+
+
+
+HibernateTemplate           Sesssion
+  Save
+  Update
+  Insert
+  Get
+  LoadAll
+
+How to Work With ORM
+--------------------
+                                                                           inject
+productDao (Data Access Object)---->HibernateTemplate(Inject object of it)---->SessionFactory(I)--->LocalSessionFactoryBean(c)--->DataSource(I){url,username,password}
+   save()
+   get()
+   All ORM(methods)
+
+
+3 things Required
+   1.DataSource
+   2.Hibernate Properties
+   3.Annotated Class (DAO)
+
+
+XML Configuration
+-------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context.xsd
+         http://www.springframework.org/schema/tx
+         http://www.springframework.org/schema/tx/spring-tx.xsd">
+         <tx:annotation-driven/>
+         
+        <bean class="com.spring.orm.dao.StudentDao" name="studentDao" p:template-ref="hibernateRef"/>
+        
+        <bean class="org.springframework.orm.hibernate5.HibernateTemplate" name="hibernateRef" p:sessionFactory-ref="sesssionRef"/>
+        
+        <bean class="org.springframework.orm.hibernate5.HibernateTransactionManager" name="transactionManager" p:sessionFactory-ref="sesssionRef"/>
+        
+        <bean class="org.springframework.orm.hibernate5.LocalSessionFactoryBean" name="sesssionRef">
+          
+          <property name="dataSource" ref="dataSourceRef"></property>
+          
+          <property name="hibernateProperties">
+            <props>
+              <prop key="hibernate.dialect">org.hibernate.dialect.Oracle12cDialect</prop>
+              <prop key="hibernate.show_sql">true</prop>
+              <prop key="hibernate.hbm2ddl.auto">update</prop>
+            </props>
+          </property>
+          
+          <property name="annotatedClasses">
+             <list>
+               <value>com.spring.orm.entity.Student</value>
+             </list>
+          </property>
+          
+        </bean>
+        <bean class="org.springframework.jdbc.datasource.DriverManagerDataSource" name="dataSourceRef">
+            <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
+            <property name="url" value="jdbc:oracle:thin:@localhost:1521:orcl"/>
+            <property name="username" value="saurav11"/>
+            <property name="password" value="Root1234A"/>
+        </bean>
+ </beans>
+----------------
+C-Create
+R-Read
+U-Update
+D-Delete
